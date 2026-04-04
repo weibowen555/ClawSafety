@@ -219,6 +219,46 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .copy-btn { position: absolute; top: 0.85rem; right: 0.85rem; padding: 0.3rem 0.65rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim); font-family: var(--mono); font-size: 0.62rem; cursor: pointer; transition: all 0.2s; font-weight: 500; }
 .copy-btn:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface-3); }
 
+/* LOGO BAR */
+.logo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.inst {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  transition: opacity 0.3s;
+  opacity: 0.6;
+}
+.inst:hover { opacity: 1; }
+.inst-name {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.inst-name strong {
+  font-weight: 700;
+  color: var(--text);
+}
+.inst-type {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.15rem;
+}
+
 /* FOOTER */
 footer { padding: 3.5rem 0; border-top: 1px solid var(--border); text-align: center; }
 footer p { font-size: 0.8rem; color: var(--text-dim); }
@@ -519,12 +559,24 @@ footer a:hover { color: var(--text); }
 
 <footer>
   <div class="container">
-    <p>
-      <a href="https://www.gmu.edu">George Mason University</a> &middot;
-      <a href="https://tulane.edu">Tulane University</a> &middot;
-      <a href="https://www.rutgers.edu">Rutgers University</a> &middot;
-      <a href="https://www.ornl.gov">Oak Ridge National Laboratory</a>
-    </p>
+    <div class="logo-bar">
+      <a href="https://www.gmu.edu" class="inst" title="George Mason University">
+        <span class="inst-name">George <strong>Mason</strong></span>
+        <span class="inst-type">University</span>
+      </a>
+      <a href="https://tulane.edu" class="inst" title="Tulane University">
+        <span class="inst-name"><strong>Tulane</strong></span>
+        <span class="inst-type">University</span>
+      </a>
+      <a href="https://www.rutgers.edu" class="inst" title="Rutgers University">
+        <span class="inst-name"><strong>Rutgers</strong></span>
+        <span class="inst-type">University</span>
+      </a>
+      <a href="https://www.ornl.gov" class="inst" title="Oak Ridge National Laboratory">
+        <span class="inst-name"><strong>Oak Ridge</strong></span>
+        <span class="inst-type">National Laboratory</span>
+      </a>
+    </div>
     <p class="footer-sub">Released for defensive safety research &middot; All experiments run in sandboxed environments &middot; <a href="https://github.com/weibowen555/ClawSafety">GitHub</a></p>
   </div>
 </footer>
