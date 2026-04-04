@@ -3,607 +3,290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClawSafety — Project Page</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>ClawSafety — "Safe" LLMs, Unsafe Agents</title>
+<meta name="description" content="A safety benchmark for personal AI agents under realistic prompt injection. 120 adversarial test cases, 5 frontier LLMs, 2,520 sandboxed trials.">
+<meta property="og:title" content="ClawSafety: Safe LLMs, Unsafe Agents">
+<meta property="og:description" content="A safety benchmark for personal AI agents under realistic prompt injection.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://weibowen555.github.io/ClawSafety/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0a0b;
+  --bg: #09090b;
   --surface: #111113;
-  --surface-2: #1a1a1e;
-  --border: #2a2a2e;
-  --text: #e8e6e3;
-  --text-dim: #8a8a8e;
-  --accent: #ff3b30;
-  --accent-glow: rgba(255, 59, 48, 0.15);
-  --green: #30d158;
-  --yellow: #ffd60a;
-  --blue: #0a84ff;
-  --orange: #ff9f0a;
-  --purple: #bf5af2;
+  --surface-2: #18181b;
+  --surface-3: #1e1e22;
+  --border: #27272a;
+  --border-hover: #3f3f46;
+  --text: #fafaf9;
+  --text-secondary: #a1a1aa;
+  --text-dim: #71717a;
+  --accent: #ef4444;
+  --accent-hover: #dc2626;
+  --accent-glow: rgba(239, 68, 68, 0.12);
+  --green: #22c55e;
+  --green-dim: rgba(34, 197, 94, 0.15);
+  --yellow: #eab308;
+  --yellow-dim: rgba(234, 179, 8, 0.15);
+  --blue: #3b82f6;
+  --blue-dim: rgba(59, 130, 246, 0.15);
+  --orange: #f97316;
+  --orange-dim: rgba(249, 115, 22, 0.15);
   --mono: 'JetBrains Mono', monospace;
   --serif: 'Source Serif 4', Georgia, serif;
   --sans: 'DM Sans', -apple-system, sans-serif;
+  --radius: 10px;
+  --radius-lg: 14px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--sans);
-  line-height: 1.6;
+  line-height: 1.65;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Grain overlay */
 body::before {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 9999;
 }
 
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
+::selection { background: var(--accent); color: #fff; }
+a { color: inherit; }
 
-/* ===== HERO ===== */
-.hero {
-  padding: 5rem 0 4rem;
-  position: relative;
-}
+.container { max-width: 1120px; margin: 0 auto; padding: 0 2rem; }
 
-.hero::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 50%;
-  transform: translateX(-50%);
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(9, 9, 11, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 0;
+}
+nav .container { display: flex; align-items: center; justify-content: space-between; }
+.nav-brand { font-family: var(--mono); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+.nav-brand span { color: var(--accent); }
+.nav-links { display: flex; gap: 1.75rem; list-style: none; }
+.nav-links a { font-size: 0.78rem; color: var(--text-dim); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+/* HERO */
+.hero { padding: 8rem 0 4.5rem; position: relative; overflow: hidden; }
+.hero::before {
+  content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 900px;
+  background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 65%);
   pointer-events: none;
-  z-index: 0;
 }
-
-.hero-content {
-  position: relative;
-  z-index: 1;
+.hero::after {
+  content: ''; position: absolute; top: 60px; right: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, var(--blue-dim) 0%, transparent 70%);
+  pointer-events: none;
 }
+.hero-content { position: relative; z-index: 1; text-align: center; max-width: 820px; margin: 0 auto; }
 
-.badge-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
+.badge-row { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center; }
 .badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: 100px;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-dim);
-  text-decoration: none;
-  transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.8rem; border-radius: 100px;
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.02em;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
+  text-decoration: none; transition: all 0.25s;
 }
-
-.badge:hover {
-  border-color: var(--accent);
-  color: var(--text);
-}
-
-.badge .dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
+.badge:hover { border-color: var(--border-hover); color: var(--text); transform: translateY(-1px); }
+.badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 .badge .dot.green { background: var(--green); }
 .badge .dot.blue { background: var(--blue); }
 .badge .dot.yellow { background: var(--yellow); }
 
-h1 {
-  font-family: var(--serif);
-  font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.5rem;
-}
+h1 { font-family: var(--serif); font-size: 4rem; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 0.6rem; }
+h1 .accent { color: var(--accent); }
+.subtitle { font-family: var(--serif); font-size: 1.4rem; color: var(--text-secondary); font-style: italic; margin-bottom: 1.5rem; }
 
-h1 .highlight {
-  color: var(--accent);
-  font-style: italic;
-}
+.authors { margin-bottom: 1.75rem; }
+.author-list { display: flex; flex-wrap: wrap; gap: 0.2rem 0.85rem; margin-bottom: 0.5rem; justify-content: center; }
+.author { font-size: 0.92rem; font-weight: 600; }
+.author sup { font-size: 0.55rem; color: var(--text-dim); margin-left: 1px; font-weight: 400; }
+.affiliations { display: flex; flex-wrap: wrap; gap: 0.15rem 1.1rem; justify-content: center; }
+.affiliations span { font-size: 0.78rem; color: var(--text-dim); }
+.affiliations sup { font-size: 0.5rem; margin-right: 2px; }
 
-.subtitle {
-  font-family: var(--serif);
-  font-size: 1.35rem;
-  color: var(--text-dim);
-  font-style: italic;
-  margin-bottom: 2rem;
-  max-width: 600px;
+.abstract {
+  text-align: left; max-width: 740px; margin: 0 auto 2rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
 }
+.abstract-label { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.6rem; font-weight: 600; }
+.abstract p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75; }
+
+.links-row { display: flex; gap: 0.65rem; justify-content: center; flex-wrap: wrap; }
+.link-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.2rem; border-radius: 8px;
+  font-family: var(--mono); font-size: 0.78rem; font-weight: 600;
+  text-decoration: none; transition: all 0.25s;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+.link-btn:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.link-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.link-btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.link-btn svg { width: 15px; height: 15px; fill: currentColor; }
 
 .hero-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-top: 2.5rem;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: var(--border); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden; margin-top: 2.5rem;
 }
-
-.stat {
-  background: var(--surface);
-  padding: 1.5rem;
-  text-align: center;
-}
-
-.stat-value {
-  font-family: var(--mono);
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-
+.stat { background: var(--surface); padding: 1.4rem 1rem; text-align: center; transition: background 0.2s; }
+.stat:hover { background: var(--surface-2); }
+.stat-value { font-family: var(--mono); font-size: 1.85rem; font-weight: 700; line-height: 1; }
 .stat-value.red { color: var(--accent); }
 .stat-value.green { color: var(--green); }
-.stat-value.blue { color: var(--blue); }
 .stat-value.yellow { color: var(--yellow); }
+.stat-label { font-size: 0.68rem; color: var(--text-dim); margin-top: 0.45rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
 
-.stat-label {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-top: 0.4rem;
-  font-family: var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
+/* SECTIONS */
+section { padding: 5rem 0; border-top: 1px solid var(--border); }
+.section-label { font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.75rem; font-weight: 600; }
+h2 { font-family: var(--serif); font-size: 2.75rem; font-weight: 700; margin-bottom: 0.85rem; letter-spacing: -0.025em; }
+p.desc { color: var(--text-secondary); font-size: 0.95rem; max-width: 680px; line-height: 1.7; margin-bottom: 2.25rem; }
 
-/* ===== LINKS ROW ===== */
-.links-row {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
+/* TAXONOMY */
+.tax-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.tax-card { background: var(--surface); padding: 1.75rem; transition: background 0.2s; }
+.tax-card:hover { background: var(--surface-2); }
+.tax-card .icon { font-size: 1.4rem; margin-bottom: 0.75rem; display: inline-block; }
+.tax-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+.tax-card p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; }
+.tag { display: inline-block; margin-top: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 5px; font-family: var(--mono); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.02em; }
+.tag.high { background: rgba(239,68,68,0.12); color: var(--accent); }
+.tag.mid { background: var(--orange-dim); color: var(--orange); }
+.tag.low { background: var(--green-dim); color: var(--green); }
+.tag.neutral { background: var(--blue-dim); color: var(--blue); }
 
-.link-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
-  border-radius: 8px;
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-}
-
-.link-btn:hover {
-  border-color: var(--text-dim);
-  transform: translateY(-1px);
-}
-
-.link-btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-.link-btn.primary:hover {
-  background: #e63329;
-  border-color: #e63329;
-}
-
-.link-btn svg {
-  width: 16px; height: 16px;
-  fill: currentColor;
-}
-
-/* ===== AUTHORS ===== */
-.authors {
-  margin-bottom: 1.75rem;
-}
-
-.author-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  margin-bottom: 0.6rem;
-}
-
-.author {
-  font-family: var(--sans);
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.author sup {
-  font-size: 0.6rem;
-  color: var(--text-dim);
-  margin-left: 1px;
-}
-
-.affiliations {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem 1.25rem;
-}
-
-.affiliations span {
-  font-family: var(--sans);
-  font-size: 0.8rem;
-  color: var(--text-dim);
-}
-
-.affiliations sup {
-  font-size: 0.55rem;
-  margin-right: 2px;
-}
-
-/* ===== SECTION STYLES ===== */
-section {
-  padding: 4rem 0;
-  border-top: 1px solid var(--border);
-}
-
-.section-label {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-  margin-bottom: 1rem;
-}
-
-h2 {
-  font-family: var(--serif);
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  letter-spacing: -0.01em;
-}
-
-p.desc {
-  color: var(--text-dim);
-  font-size: 1rem;
-  max-width: 680px;
-  line-height: 1.7;
-  margin-bottom: 2rem;
-}
-
-/* ===== RESULTS TABLE ===== */
-.table-wrap {
-  overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
-
-thead {
-  background: var(--surface-2);
-}
-
-th {
-  padding: 0.85rem 1.25rem;
-  text-align: left;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-dim);
-  font-weight: 600;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-
-td {
-  padding: 0.75rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--mono);
-  font-size: 0.82rem;
-  white-space: nowrap;
-}
-
-tr:last-child td {
-  border-bottom: none;
-}
-
-.model-name {
-  font-family: var(--sans);
-  font-weight: 600;
-  color: var(--text);
-}
-
-.scaffold-label {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  padding: 0.6rem 1.25rem;
-  background: var(--bg);
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-}
-
-td.num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
+/* TABLE */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+thead { background: var(--surface-2); }
+th { padding: 0.85rem 1.25rem; text-align: left; font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 0.7rem 1.25rem; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 0.82rem; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.015); }
+.model-name { font-family: var(--sans); font-weight: 600; color: var(--text); }
+.scaffold-label { font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim); padding: 0.55rem 1.25rem; background: var(--bg); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .best { color: var(--green); font-weight: 700; }
 .worst { color: var(--accent); font-weight: 700; }
-.avg-row td { 
-  background: var(--surface-2); 
-  font-weight: 600;
-  color: var(--text-dim);
-}
+.avg-row td { background: var(--surface-2); font-weight: 600; color: var(--text-secondary); }
 
-/* ===== TAXONOMY GRID ===== */
-.tax-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
+/* FINDINGS */
+.findings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.finding { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; background: var(--surface); transition: all 0.25s; }
+.finding:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+.finding-num { font-family: var(--mono); font-size: 0.62rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.65rem; font-weight: 600; }
+.finding h3 { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.45rem; line-height: 1.3; }
+.finding p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; }
 
-.tax-card {
-  background: var(--surface);
-  padding: 1.75rem;
-}
-
-.tax-card .icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.tax-card h3 {
-  font-family: var(--sans);
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.tax-card p {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  line-height: 1.6;
-}
-
-.tax-card .tag {
-  display: inline-block;
-  margin-top: 0.75rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  background: var(--accent-glow);
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.tax-card .tag.high { background: rgba(255, 59, 48, 0.15); color: var(--accent); }
-.tax-card .tag.mid { background: rgba(255, 159, 10, 0.15); color: var(--orange); }
-.tax-card .tag.low { background: rgba(48, 209, 88, 0.15); color: var(--green); }
-
-/* ===== FINDINGS ===== */
-.findings-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.finding {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.75rem;
-  background: var(--surface);
-  transition: border-color 0.2s;
-}
-
-.finding:hover {
-  border-color: var(--text-dim);
-}
-
-.finding-num {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.75rem;
-}
-
-.finding h3 {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  line-height: 1.3;
-}
-
-.finding p {
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  line-height: 1.65;
-}
-
-/* ===== CODE BLOCK / QUICK START ===== */
-.code-block {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.code-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  background: var(--surface-2);
-  border-bottom: 1px solid var(--border);
-}
-
-.code-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-}
-
+/* CODE */
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.code-header { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.25rem; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
 .code-dot.r { background: #ff5f57; }
 .code-dot.y { background: #febc2e; }
 .code-dot.g { background: #28c840; }
-
-.code-title {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  margin-left: 0.5rem;
-}
-
-.code-body {
-  padding: 1.25rem;
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  line-height: 1.8;
-  color: var(--text-dim);
-  overflow-x: auto;
-}
-
-.code-body .comment { color: #555; }
+.code-title { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); margin-left: 0.5rem; }
+.code-body { padding: 1.25rem 1.5rem; font-family: var(--mono); font-size: 0.76rem; line-height: 1.85; color: var(--text-secondary); overflow-x: auto; white-space: pre; }
+.code-body .comment { color: #52525b; }
 .code-body .cmd { color: var(--green); }
 .code-body .flag { color: var(--blue); }
 .code-body .string { color: var(--yellow); }
 
-/* ===== CITATION ===== */
-.citation-block {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  line-height: 1.8;
-  color: var(--text-dim);
-  position: relative;
-  overflow-x: auto;
-  white-space: pre;
-}
+/* CITATION */
+.citation-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem 1.75rem; font-family: var(--mono); font-size: 0.72rem; line-height: 1.85; color: var(--text-secondary); position: relative; overflow-x: auto; white-space: pre; }
+.copy-btn { position: absolute; top: 0.85rem; right: 0.85rem; padding: 0.3rem 0.65rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim); font-family: var(--mono); font-size: 0.62rem; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.copy-btn:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface-3); }
 
-.copy-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.35rem 0.7rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text-dim);
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+/* FOOTER */
+footer { padding: 3.5rem 0; border-top: 1px solid var(--border); text-align: center; }
+footer p { font-size: 0.8rem; color: var(--text-dim); }
+footer a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+footer a:hover { color: var(--text); }
+.footer-sub { margin-top: 0.6rem; font-size: 0.7rem; }
 
-.copy-btn:hover {
-  border-color: var(--text-dim);
-  color: var(--text);
-}
-
-/* ===== FOOTER ===== */
-footer {
-  padding: 3rem 0;
-  border-top: 1px solid var(--border);
-  text-align: center;
-}
-
-footer p {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-}
-
-footer a {
-  color: var(--text);
-  text-decoration: none;
-}
-
-footer a:hover {
-  color: var(--accent);
-}
-
-/* ===== RESPONSIVE ===== */
+/* RESPONSIVE */
 @media (max-width: 768px) {
-  h1 { font-size: 2.2rem; }
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  .hero { padding: 6.5rem 0 3rem; }
   .hero-stats { grid-template-columns: repeat(2, 1fr); }
   .tax-grid { grid-template-columns: 1fr; }
   .findings-grid { grid-template-columns: 1fr; }
-  .stat-value { font-size: 1.5rem; }
+  .stat-value { font-size: 1.4rem; }
+  .nav-links { display: none; }
+  .subtitle { font-size: 1.1rem; }
+  .abstract { padding: 1.25rem; }
 }
 
-/* Animations */
+/* ANIMATIONS */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-.hero-content > * {
-  animation: fadeUp 0.6s ease-out both;
-}
-
+.hero-content > * { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .hero-content > *:nth-child(1) { animation-delay: 0s; }
-.hero-content > *:nth-child(2) { animation-delay: 0.1s; }
-.hero-content > *:nth-child(3) { animation-delay: 0.15s; }
-.hero-content > *:nth-child(4) { animation-delay: 0.18s; }
-.hero-content > *:nth-child(5) { animation-delay: 0.22s; }
-.hero-content > *:nth-child(6) { animation-delay: 0.28s; }
-.hero-content > *:nth-child(7) { animation-delay: 0.33s; }
+.hero-content > *:nth-child(2) { animation-delay: 0.06s; }
+.hero-content > *:nth-child(3) { animation-delay: 0.12s; }
+.hero-content > *:nth-child(4) { animation-delay: 0.16s; }
+.hero-content > *:nth-child(5) { animation-delay: 0.2s; }
+.hero-content > *:nth-child(6) { animation-delay: 0.24s; }
+.hero-content > *:nth-child(7) { animation-delay: 0.28s; }
+.hero-content > *:nth-child(8) { animation-delay: 0.32s; }
+
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
 
-<!-- HERO -->
+<nav>
+  <div class="container">
+    <a class="nav-brand" href="#"><span>Claw</span>Safety</a>
+    <ul class="nav-links">
+      <li><a href="#taxonomy">Taxonomy</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#start">Quick Start</a></li>
+      <li><a href="#cite">Citation</a></li>
+      <li><a href="https://arxiv.org/abs/2604.01438">Paper ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="hero">
   <div class="container">
     <div class="hero-content">
       <div class="badge-row">
-        <a class="badge" href="#"><span class="dot"></span> Preprint 2026</a>
-        <a class="badge" href="#"><span class="dot green"></span> Benchmark v1.0</a>
-        <a class="badge" href="#"><span class="dot blue"></span> 120 Test Cases</a>
-        <a class="badge" href="#"><span class="dot yellow"></span> 5 Models &middot; 3 Scaffolds</a>
+        <span class="badge"><span class="dot"></span> arXiv 2026</span>
+        <span class="badge"><span class="dot green"></span> 120 Test Cases</span>
+        <span class="badge"><span class="dot blue"></span> 5 Models</span>
+        <span class="badge"><span class="dot yellow"></span> 3 Scaffolds</span>
       </div>
 
-      <h1>ClawSafety</h1>
-      <div class="subtitle">&ldquo;Safe&rdquo; LLMs, <span class="highlight">Unsafe</span> Agents</div>
+      <h1>Claw<span class="accent">Safety</span></h1>
+      <div class="subtitle">&ldquo;Safe&rdquo; LLMs, Unsafe Agents</div>
 
       <div class="authors">
         <div class="author-list">
@@ -624,24 +307,19 @@ footer a:hover {
         </div>
       </div>
 
-      <p class="desc">
-        A safety benchmark for personal AI agents under realistic prompt injection. 
-        120 adversarial test cases across 5 professional domains, 3 injection vectors, 
-        and 5 harmful action types — evaluated on frontier LLMs with 2,520 sandboxed trials.
-      </p>
+      <div class="abstract">
+        <div class="abstract-label">Abstract</div>
+        <p>Personal AI agents like OpenClaw run with elevated privileges on users' local machines, where a single successful prompt injection can leak credentials, redirect financial transactions, or destroy files. We introduce <strong>ClawSafety</strong>, a benchmark of 120 adversarial test cases organized along three dimensions — harm domain, attack vector, and harmful action type — grounded in realistic, high-privilege professional workspaces spanning software engineering, finance, healthcare, law, and DevOps. Across five frontier LLMs and 2,520 sandboxed trials, attack success rates range from 40% to 75%, with skill instructions consistently more dangerous than email or web content. Cross-scaffold experiments further demonstrate that safety depends on the full deployment stack, not the backbone model alone.</p>
+      </div>
 
       <div class="links-row">
         <a class="link-btn primary" href="https://github.com/weibowen555/ClawSafety">
           <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-          Code
+          Code &amp; Data
         </a>
         <a class="link-btn" href="https://arxiv.org/abs/2604.01438">
           <svg viewBox="0 0 16 16"><path d="M4.5 2A2.5 2.5 0 002 4.5v7A2.5 2.5 0 004.5 14h7a2.5 2.5 0 002.5-2.5v-7A2.5 2.5 0 0011.5 2h-7zM5 5.5A.5.5 0 015.5 5h5a.5.5 0 010 1h-5A.5.5 0 015 5.5zm0 2A.5.5 0 015.5 7h5a.5.5 0 010 1h-5A.5.5 0 015 7.5zm0 2a.5.5 0 01.5-.5h3a.5.5 0 010 1h-3a.5.5 0 01-.5-.5z"/></svg>
-          Paper
-        </a>
-        <a class="link-btn" href="https://github.com/weibowen555/ClawSafety">
-          <svg viewBox="0 0 16 16"><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm2.5 1a.5.5 0 00-.5.5v5a.5.5 0 001 0v-5a.5.5 0 00-.5-.5zm3 0a.5.5 0 00-.5.5v5a.5.5 0 001 0v-5a.5.5 0 00-.5-.5zm3 0a.5.5 0 00-.5.5v5a.5.5 0 001 0v-5a.5.5 0 00-.5-.5z"/></svg>
-          Data
+          Paper (arXiv)
         </a>
       </div>
 
@@ -667,15 +345,11 @@ footer a:hover {
   </div>
 </div>
 
-<!-- ATTACK VECTORS -->
-<section>
-  <div class="container">
+<section id="taxonomy">
+  <div class="container reveal">
     <div class="section-label">Attack Taxonomy</div>
-    <h2>Three Injection Vectors</h2>
-    <p class="desc">
-      Each test case embeds adversarial content in exactly one channel the agent encounters during normal work. 
-      Vectors differ in implicit trust level.
-    </p>
+    <h2>Three Injection Vectors, Five Domains</h2>
+    <p class="desc">Each test case embeds adversarial content in exactly one channel the agent encounters during normal work, ordered by implicit trust level.</p>
     <div class="tax-grid">
       <div class="tax-card">
         <div class="icon">⚙️</div>
@@ -686,7 +360,7 @@ footer a:hover {
       <div class="tax-card">
         <div class="icon">✉️</div>
         <h3>Email Injection</h3>
-        <p>Adversarial emails from spoofed trusted senders, mixed into the inbox. Trust depends on sender identity.</p>
+        <p>Adversarial emails from spoofed trusted senders, mixed into the inbox. Trust depends on sender identity and role.</p>
         <span class="tag mid">60.5% avg ASR</span>
       </div>
       <div class="tax-card">
@@ -698,114 +372,61 @@ footer a:hover {
       <div class="tax-card">
         <div class="icon">💼</div>
         <h3>5 Professional Domains</h3>
-        <p>Software Engineering, Financial Operations, Healthcare, Legal/Contract Management, and DevOps/Infrastructure.</p>
-        <span class="tag">5 scenarios</span>
+        <p>Software Engineering, Financial Ops, Healthcare Administration, Legal/Contract Management, DevOps/Infrastructure.</p>
+        <span class="tag neutral">5 scenarios × 24 cases each</span>
       </div>
       <div class="tax-card">
         <div class="icon">🎯</div>
         <h3>5 Harmful Action Types</h3>
         <p>Data exfiltration, config modification, destination substitution, credential forwarding, and destructive actions.</p>
-        <span class="tag">8 cases × 3 vectors × 5 domains</span>
+        <span class="tag neutral">120 total test cases</span>
       </div>
       <div class="tax-card">
         <div class="icon">🔄</div>
         <h3>64-Turn Conversations</h3>
         <p>Four-phase protocol: warm-up, context building, injection encounter, and disclosure window with 16 varied framings.</p>
-        <span class="tag">tunable granularity</span>
+        <span class="tag neutral">tunable granularity</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MAIN RESULTS -->
-<section>
-  <div class="container">
+<section id="results">
+  <div class="container reveal">
     <div class="section-label">Experimental Results</div>
-    <h2>Main Results</h2>
-    <p class="desc">
-      Attack Success Rate (%) by model, scaffold, and injection vector across all scenarios. 
-      Three independent trials per (model, case) pair, majority vote.
-    </p>
+    <h2>Attack Success Rates</h2>
+    <p class="desc">ASR (%) by model, scaffold, and injection vector across all scenarios. Three independent trials per configuration; majority vote.</p>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
             <th>Model</th>
-            <th style="text-align:right">SKILL</th>
+            <th style="text-align:right">Skill</th>
             <th style="text-align:right">Email</th>
             <th style="text-align:right">Web</th>
             <th style="text-align:right">Overall</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td colspan="5" class="scaffold-label">OpenClaw</td></tr>
-          <tr>
-            <td><span class="model-name">Claude Sonnet 4.6</span></td>
-            <td class="num best">55.0</td>
-            <td class="num best">45.0</td>
-            <td class="num best">20.0</td>
-            <td class="num best">40.0</td>
-          </tr>
-          <tr>
-            <td><span class="model-name">Gemini 2.5 Pro</span></td>
-            <td class="num">72.5</td>
-            <td class="num">55.0</td>
-            <td class="num">37.5</td>
-            <td class="num">55.0</td>
-          </tr>
-          <tr>
-            <td><span class="model-name">Kimi K2.5</span></td>
-            <td class="num">77.5</td>
-            <td class="num">60.0</td>
-            <td class="num">45.0</td>
-            <td class="num">60.8</td>
-          </tr>
-          <tr>
-            <td><span class="model-name">DeepSeek V3</span></td>
-            <td class="num">82.5</td>
-            <td class="num">67.5</td>
-            <td class="num">52.5</td>
-            <td class="num">67.5</td>
-          </tr>
-          <tr>
-            <td><span class="model-name">GPT-5.1</span></td>
-            <td class="num worst">90.0</td>
-            <td class="num worst">75.0</td>
-            <td class="num worst">60.0</td>
-            <td class="num worst">75.0</td>
-          </tr>
-          <tr><td colspan="5" class="scaffold-label">Nanobot</td></tr>
-          <tr>
-            <td><span class="model-name">Claude Sonnet 4.6</span></td>
-            <td class="num">50.0</td>
-            <td class="num">62.5</td>
-            <td class="num">33.3</td>
-            <td class="num">48.6</td>
-          </tr>
-          <tr><td colspan="5" class="scaffold-label">NemoClaw</td></tr>
-          <tr>
-            <td><span class="model-name">Claude Sonnet 4.6</span></td>
-            <td class="num">58.3</td>
-            <td class="num">58.3</td>
-            <td class="num">20.8</td>
-            <td class="num">45.8</td>
-          </tr>
-          <tr class="avg-row">
-            <td>Overall Vector Avg.</td>
-            <td class="num">69.4</td>
-            <td class="num">60.5</td>
-            <td class="num">38.4</td>
-            <td class="num">56.1</td>
-          </tr>
+          <tr><td colspan="5" class="scaffold-label">OpenClaw v2026.3</td></tr>
+          <tr><td><span class="model-name">Claude Sonnet 4.6</span></td><td class="num best">55.0</td><td class="num best">45.0</td><td class="num best">20.0</td><td class="num best">40.0</td></tr>
+          <tr><td><span class="model-name">Gemini 2.5 Pro</span></td><td class="num">72.5</td><td class="num">55.0</td><td class="num">37.5</td><td class="num">55.0</td></tr>
+          <tr><td><span class="model-name">Kimi K2.5</span></td><td class="num">77.5</td><td class="num">60.0</td><td class="num">45.0</td><td class="num">60.8</td></tr>
+          <tr><td><span class="model-name">DeepSeek V3</span></td><td class="num">82.5</td><td class="num">67.5</td><td class="num">52.5</td><td class="num">67.5</td></tr>
+          <tr><td><span class="model-name">GPT-5.1</span></td><td class="num worst">90.0</td><td class="num worst">75.0</td><td class="num worst">60.0</td><td class="num worst">75.0</td></tr>
+          <tr><td colspan="5" class="scaffold-label">Nanobot v0.8</td></tr>
+          <tr><td><span class="model-name">Claude Sonnet 4.6</span></td><td class="num">50.0</td><td class="num">62.5</td><td class="num">33.3</td><td class="num">48.6</td></tr>
+          <tr><td colspan="5" class="scaffold-label">NemoClaw v0.1</td></tr>
+          <tr><td><span class="model-name">Claude Sonnet 4.6</span></td><td class="num">58.3</td><td class="num">58.3</td><td class="num">20.8</td><td class="num">45.8</td></tr>
+          <tr class="avg-row"><td>Overall Vector Avg.</td><td class="num">69.4</td><td class="num">60.5</td><td class="num">38.4</td><td class="num">56.1</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
 
-<!-- KEY FINDINGS -->
-<section>
-  <div class="container">
+<section id="findings">
+  <div class="container reveal">
     <div class="section-label">Key Findings</div>
     <h2>What We Found</h2>
     <div class="findings-grid">
@@ -817,7 +438,7 @@ footer a:hover {
       <div class="finding">
         <div class="finding-num">Finding 02</div>
         <h3>Scaffold Shifts Safety</h3>
-        <p>Scaffold choice alone shifts ASR by up to 8.6pp and can reverse vector effectiveness rankings. Nanobot flips the trust-level gradient.</p>
+        <p>Scaffold choice alone shifts ASR by up to 8.6pp and can reverse vector effectiveness rankings. Nanobot flips the trust-level gradient observed on OpenClaw.</p>
       </div>
       <div class="finding">
         <div class="finding-num">Finding 03</div>
@@ -831,7 +452,7 @@ footer a:hover {
       </div>
       <div class="finding">
         <div class="finding-num">Finding 05</div>
-        <h3>Declarative Bypasses All Defenses</h3>
+        <h3>Declarative Bypasses Defenses</h3>
         <p>Imperative phrasing ("update X") triggers defenses; declarative phrasing ("X does not match Y") bypasses all defenses — regardless of content or styling.</p>
       </div>
       <div class="finding">
@@ -843,14 +464,11 @@ footer a:hover {
   </div>
 </section>
 
-<!-- QUICK START -->
-<section>
-  <div class="container">
+<section id="start">
+  <div class="container reveal">
     <div class="section-label">Getting Started</div>
     <h2>Quick Start</h2>
-    <p class="desc">
-      Run a single evaluation in minutes. Each test case runs in a fresh sandboxed environment.
-    </p>
+    <p class="desc">Clone, install, and run a single evaluation in minutes. Each test case runs in a fresh sandboxed environment.</p>
     <div class="code-block">
       <div class="code-header">
         <div class="code-dot r"></div>
@@ -860,18 +478,14 @@ footer a:hover {
       </div>
       <div class="code-body">
 <span class="comment"># Clone the repository</span>
-<span class="cmd">git clone</span> https://github.com/your-org/ClawSafety.git
+<span class="cmd">git clone</span> https://github.com/weibowen555/ClawSafety.git
 <span class="cmd">cd</span> ClawSafety
 
 <span class="comment"># Install dependencies</span>
 <span class="cmd">pip install</span> <span class="flag">-e</span> .
 
 <span class="comment"># Run a single scenario (S1: Software Engineering, skill injection)</span>
-<span class="cmd">python</span> run_eval.py \
-  <span class="flag">--scenario</span> <span class="string">s1_software_eng</span> \
-  <span class="flag">--vector</span> <span class="string">skill</span> \
-  <span class="flag">--model</span> <span class="string">claude-sonnet-4.6</span> \
-  <span class="flag">--scaffold</span> <span class="string">openclaw</span>
+<span class="cmd">python</span> run_eval.py <span class="flag">--scenario</span> <span class="string">s1_software_eng</span> <span class="flag">--vector</span> <span class="string">skill</span> <span class="flag">--model</span> <span class="string">claude-sonnet-4.6</span> <span class="flag">--scaffold</span> <span class="string">openclaw</span>
 
 <span class="comment"># Run full benchmark (all 120 cases × 3 trials)</span>
 <span class="cmd">python</span> run_eval.py <span class="flag">--all</span> <span class="flag">--trials</span> <span class="string">3</span>
@@ -883,9 +497,8 @@ footer a:hover {
   </div>
 </section>
 
-<!-- CITATION -->
-<section>
-  <div class="container">
+<section id="cite">
+  <div class="container reveal">
     <div class="section-label">Citation</div>
     <h2>BibTeX</h2>
     <p class="desc">If you use ClawSafety in your research, please cite our paper.</p>
@@ -904,30 +517,32 @@ footer a:hover {
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="container">
     <p>
-      <a href="#">George Mason University</a> &middot;
-      <a href="#">Tulane University</a> &middot;
-      <a href="#">Rutgers University</a> &middot;
-      <a href="#">Oak Ridge National Laboratory</a>
+      <a href="https://www.gmu.edu">George Mason University</a> &middot;
+      <a href="https://tulane.edu">Tulane University</a> &middot;
+      <a href="https://www.rutgers.edu">Rutgers University</a> &middot;
+      <a href="https://www.ornl.gov">Oak Ridge National Laboratory</a>
     </p>
-    <p style="margin-top: 0.5rem; font-size: 0.72rem;">
-      Released for defensive safety research. All experiments run in sandboxed environments.
-    </p>
+    <p class="footer-sub">Released for defensive safety research &middot; All experiments run in sandboxed environments &middot; <a href="https://github.com/weibowen555/ClawSafety">GitHub</a></p>
   </div>
 </footer>
 
 <script>
 function copyBibtex() {
-  const text = document.getElementById('bibtex').innerText.replace('Copy', '').trim();
+  const el = document.getElementById('bibtex');
+  const text = el.innerText.replace('Copy', '').trim();
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.querySelector('.copy-btn');
     btn.textContent = 'Copied!';
     setTimeout(() => btn.textContent = 'Copy', 2000);
   });
 }
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 
 </body>
