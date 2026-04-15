@@ -47,6 +47,19 @@ Each test case includes a complete professional workspace (50+ files), a 64-turn
 
 > **Coming soon.** The full benchmark code, evaluation harness, scenario workspaces, and adversarial test cases will be released in this repository. Stay tuned — star the repo to get notified!
 
+
+## 🛡️ Responsible Disclosure
+
+Prior to releasing this benchmark, we notified the developers of all evaluated
+models — Anthropic, OpenAI, Google DeepMind, DeepSeek, and Moonshot — of the
+attack patterns documented in our paper. All experiments were conducted in
+sandboxed environments against publicly available APIs, with no access to real
+user data, financial systems, or production infrastructure.
+
+We release these test cases to support defensive research: developing input
+filters, output verifiers, and scaffold-level mitigations against indirect
+prompt injection. See [SECURITY.md](SECURITY.md) for guidance on responsible use.
+
 ## 📄 Citation
 
 If you use ClawSafety in your research, please cite our paper:
