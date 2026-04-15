@@ -60,6 +60,13 @@ We release these test cases to support defensive research: developing input
 filters, output verifiers, and scaffold-level mitigations against indirect
 prompt injection. See [SECURITY.md](SECURITY.md) for guidance on responsible use.
 
+## 📜 License
+
+Code is released under the [MIT License](LICENSE). Scenario narratives, paper
+text, and figures are released under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
+Adversarial test cases are released for defensive safety research; see
+[SECURITY.md](SECURITY.md) for our responsible-use guidance.
+
 ## 📄 Citation
 
 If you use ClawSafety in your research, please cite our paper:
