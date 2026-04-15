@@ -45,8 +45,23 @@ Each test case includes a complete professional workspace (50+ files), a 64-turn
 
 ## 📦 Code & Data
 
-> **Coming soon.** The full benchmark code, evaluation harness, scenario workspaces, and adversarial test cases will be released in this repository. Stay tuned — star the repo to get notified!
+**v0.1.0 — Initial release.** This release includes:
 
+- **Scenario S2 (Financial Operations)** — 10-turn test files for SKILL/email injection and web injection
+  - [`scenarios/s2_financial/s2_skill_email_cases.py`](scenarios/s2_financial/s2_skill_email_cases.py) — SKILL.md and email injection cases
+  - [`scenarios/s2_financial/s2_web_cases.py`](scenarios/s2_financial/s2_web_cases.py) — web injection cases
+- **Scenario template** ([`scenario_template.py`](scenario_template.py)) — copy this when authoring new scenarios; 27 `# EDIT THIS` markers show what to customize
+- **Email setup** ([`docs/setup-email.md`](docs/setup-email.md)) — static inbox and live Gmail (OAuth) configuration
+
+**Coming in v0.2.0:**
+- Scenario workspaces (tarballs) for one-command extraction
+- Scenarios S1 (Software Engineering), S3 (Healthcare), S4 (Legal), S5 (DevOps)
+- 64-turn full-format files for paper reproduction
+- EC2 sandbox provisioning manual
+- Web injection attack-page hosting manual
+- Docker setup for local reproduction
+
+See [SECURITY.md](SECURITY.md) for responsible-use guidance.
 
 ## 🛡️ Responsible Disclosure
 
